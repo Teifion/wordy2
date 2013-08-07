@@ -7,9 +7,6 @@
         <a class="inbutton" href="${request.route_url('wordy.preferences')}">Preferences</a>
     </div>
     <div metal:fill-slot="content">
-        <!-- <a class="inbutton docbutton" href="${request.route_url('wordy.documentation')}">Documentation</a> -->
-        <br /><br />
-        
         <div style="width: 350px; float:right;" id="waiting_games">
             <div tal:condition="len(waiting_list) != 0">
                 <strong>Games awaiting your opponent's move:</strong><br />

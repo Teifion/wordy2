@@ -1,6 +1,9 @@
 def includeme(config):
     from . import views
     
+    config.add_route('wordy.install', '/install')
+    config.add_view(views.install, route_name='wordy.install', renderer='templates/general/install.pt', permission='loggedin')
+    
     # General views
     config.add_route('wordy.menu', '/menu')
     config.add_route('wordy.stats', '/stats')

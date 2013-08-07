@@ -1,1 +1,6 @@
 Built from a combination of the old Wordy and the Ultimate O's and X's game I wrote. The idea was to take into account the lesson's I'd learned, practice porting a code-base I'm not so familiar with and then add matchmaking + unit tests.
+
+INSTALLATION
+Traverse to your_route/wordy/install. Wordy will ask you to select the word file and allow you to upload it.
+
+Once installed Wordy will disable the installation page (by HTTP forwarding people away).
