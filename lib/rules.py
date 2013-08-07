@@ -393,6 +393,8 @@ def scan_for_end(the_game):
     return False
 
 def win_ratio(wins, total_games, decimal_points=2):
-    if total_games == 0: return 0
-    if wins == 0: return 0
+    if total_games < 1: return 0
+    if wins < 1: return 0
+    if wins > total_games:
+        raise ValueError("Cannot have more wins than total games")
     return round(100 * (wins / total_games), decimal_points)

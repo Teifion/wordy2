@@ -68,4 +68,52 @@ class RulesTester(unittest.TestCase):
         scores, new_board = rules.test_move(empty_game, player_id=1, letters=letters, db_words=("DIRT",))
         self.assertEqual(scores[0], ("DIRT", 5))
     
+    def test_scan_for_end(self):
+        def game():
+            return WordyGame(
+                players        = [1,2],
+                tiles          = ["DIRTABC", "ABCDEF"],
+                game_bag       = "ABC",
+            )
+        
+        # Test to make sure default doesn't end
+        default_game = game()
+        self.assertEqual(rules.scan_for_end(default_game), False)
+        
+        # Empty bag but not tiles
+        empty_bag = game()
+        empty_bag.game_bag = ""
+        self.assertEqual(rules.scan_for_end(empty_bag), False)
+        
+        # One set of empty tiles
+        empty_tiles = game()
+        empty_tiles.game_bag = ""
+        empty_tiles.tiles[0] = ""
+        self.assertEqual(rules.scan_for_end(empty_tiles), True)
     
+    def test_win_ratio(self):
+        # Test outliers
+        r = rules.win_ratio(wins=0, total_games=0, decimal_points=2)
+        self.assertEqual(r, 0)
+        
+        r = rules.win_ratio(wins=1, total_games=-1, decimal_points=2)
+        self.assertEqual(r, 0)
+        
+        r = rules.win_ratio(wins=-1, total_games=1, decimal_points=2)
+        self.assertEqual(r, 0)
+        
+        r = rules.win_ratio(wins=-1, total_games=-1, decimal_points=2)
+        self.assertEqual(r, 0)
+        
+        # Exception
+        self.assertRaises(ValueError, rules.win_ratio, wins=3, total_games=2, decimal_points=2)
+        
+        # Standard behaviour
+        r = rules.win_ratio(wins=1, total_games=2, decimal_points=2)
+        self.assertEqual(r, 50)
+        
+        r = rules.win_ratio(wins=0, total_games=2, decimal_points=2)
+        self.assertEqual(r, 0)
+        
+        r = rules.win_ratio(wins=2, total_games=2, decimal_points=2)
+        self.assertEqual(r, 100)
