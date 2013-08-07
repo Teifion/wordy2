@@ -3,15 +3,17 @@ These functions handle talking to the database and should be considered
 impure.
 """
 
+import transaction
 from ..config import config
 
 from ..models import (
     WordyGame,
     WordyMove,
     WordyProfile,
+    WordyWord,
 )
 
-from sqlalchemy import or_, and_
+from sqlalchemy import or_
 from sqlalchemy import func
 import datetime
 
@@ -290,3 +292,30 @@ def get_stats(user_id, opponent_id=None):
     stats['win_ratio'] = rules.win_ratio(stats['games_won'], stats['completed_games'])
     
     return stats
+
+def check_for_install():
+    r = config['DBSession'].query(WordyWord).first()
+    if r is None:
+        return False
+    return True
+
+def install(words):
+    # We're splitting by space but it might be we should watch for
+    # line returns and commas too
+    words = words.replace("\n", " ").replace(",", " ").replace("\t", " ")
+    
+    # Filter out empty words (just incase)
+    word_list = filter(
+        lambda x: x.strip() != "",
+        [s.strip() for s in words.split(" ")]
+    )
+    
+    # Build query
+    query = "INSERT INTO wordy_words (word) VALUES {}".format(
+        ",".join(["('%s')" % w.replace("'", "''") for w in word_list])
+    )
+    
+    with transaction.manager:
+        config['DBSession'].execute("DELETE FROM wordy_words")
+        config['DBSession'].execute(query)
+        config['DBSession'].execute("COMMIT")

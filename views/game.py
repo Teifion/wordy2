@@ -1,5 +1,4 @@
 import datetime
-
 from pyramid.httpexceptions import HTTPFound
 
 from pyramid.renderers import get_renderer
@@ -123,14 +122,13 @@ def make_move(request):
     player_letters = the_game.tiles[player_number]
     new_letters = []
     
-    result = []
     for k, tile_info in request.params.items():
         if tile_info != "":
             l, x, y = tile_info.split("_")
             
             try:
                 new_letters.append((player_letters[int(l)], int(x), int(y)))
-            except Exception as e:
+            except Exception:
                 # I have a hunch this is caused by submitting the move twice in a row
                 return "failure:List index exception. I can't work out why this is happening or if you even see anything. If you do see this, please let Teifion know."
     

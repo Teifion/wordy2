@@ -1,0 +1,16 @@
+<div metal:use-macro="layout">
+    <style type="text/css" media="screen" metal:fill-slot="css">
+        
+    </style>
+    <div metal:fill-slot="header_buttons" style="display:inline-block;">
+        <a class="inbutton homebutton" href="${request.route_url('wordy.menu')}">Wordy menu</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div metal:fill-slot="content">
+        ${structure:content}
+    </div>
+    
+    <div metal:fill-slot="footer">
+        Open source - <a href="http://github.com/teifion/wordy2">http://github.com/teifion/wordy2</a>
+    </div>
+</div>

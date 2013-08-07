@@ -2,5 +2,13 @@ Built from a combination of the old Wordy and the Ultimate O's and X's game I wr
 
 INSTALLATION
 Traverse to your_route/wordy/install. Wordy will ask you to select the word file and allow you to upload it.
+Wordy will accept CSV, TSV, New line and Space separated words so will hopefully work with almost any wordlist.
 
 Once installed Wordy will disable the installation page (by HTTP forwarding people away).
+
+I got my wordlist from http://www.becomeawordgameexpert.com/wordlists.htm, there are loads of other very cool word lists on that page, well worth a look at too.
+
+
+
+
+I made this project to add to a program at work. This software is released under a BSD license (do what you want with it but I'm not to blame for anything that happens as a result).

@@ -1,14 +1,8 @@
-import transaction
-import datetime
-
-from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
-
 from pyramid.renderers import get_renderer
+from pyramid.httpexceptions import HTTPFound
 
 from ..lib import (
     db,
-    rules,
 )
 
 from ..config import config
@@ -31,6 +25,48 @@ def menu(request):
         
         game_list    = list(game_list),
         waiting_list = list(waiting_list),
+    )
+
+def install(request):
+    layout = get_renderer(config['layout']).implementation()
+    
+    if db.check_for_install():
+        return HTTPFound(location=request.route_url("wordy.menu"))
+    
+    if "form.submitted" in request.params:
+        f = request.params['wordlist'].file
+        
+        try:
+            words = f.read().decode('latin-1')
+        except Exception:
+            words = f.read().decode('utf-8')
+        
+        db.install(words)
+        
+        # Register the achievements
+        # achievement_functions.register(achievements.achievements)
+        
+        content = "Wordlist inserted correctly<br /><br /><a href='{route}' class='inbutton'>Wordy main menu</a>".format(
+            route = request.route_url('wordy.menu')
+        )
+    else:
+        content = """
+        <form tal:condition="the_doc != None" action="{route}" method="post" accept-charset="utf-8" style="padding:10px;" enctype="multipart/form-data">
+            
+            <label for="wordlist">Wordlist file:</label>
+            <input type="file" name="wordlist" size="40">
+            <br />
+            
+            <input type="submit" name="form.submitted" />
+        </form>
+        """.format(
+            route = request.route_url('wordy.install')
+        )
+    
+    return dict(
+        title   = "Wordy installation",
+        layout  = layout,
+        content = content,
     )
 
 def stats(request):
