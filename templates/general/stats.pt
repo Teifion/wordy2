@@ -1,0 +1,80 @@
+<div metal:use-macro="layout">
+    <style type="text/css" media="screen" metal:fill-slot="css">
+        
+    </style>
+    <div metal:fill-slot="header_buttons" style="display:inline-block;">
+        <a class="inbutton homebutton" href="${request.route_url('wordy.menu')}">Wordy menu</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div metal:fill-slot="content">
+        
+        <div style="font-size:1.3em;margin-bottom:20px;">Win ratio: ${stats['win_ratio']}%</div>
+        
+        <table border="0" cellspacing="0" cellpadding="5">
+            <tr>
+                <td><strong>Games played:</strong></td>
+                <td>${stats['completed_games'] + stats['games_in_progress']}</td>
+                
+                <td width="75">&nbsp;</td>
+                
+                <td><strong>Games won:</strong></td>
+                <td>${stats['games_won']}</td>
+            </tr>
+            <tr>
+                <td><strong>Completed games:</strong></td>
+                <td>${stats['completed_games']}</td>
+                
+                <td width="75">&nbsp;</td>
+                
+                <td><strong>Games lost:</strong></td>
+                <td>${stats['games_lost']}</td>
+            </tr>
+            <tr>
+                <td><strong>Games in progress:</strong></td>
+                <td>${stats['games_in_progress']}</td>
+                
+                <td width="75">&nbsp;</td>
+                
+                <td><strong>Games drawn:</strong></td>
+                <td>${stats['games_drawn']}</td>
+            </tr>
+        </table>
+        
+        <!-- Head to Head -->
+        <br /><br /><br /><br />
+        <script type="text/javascript" charset="utf-8" tal:condition="stats != None">
+            $(document).ready(function() {
+                $('#opponent').focus();
+            });
+            
+            function get_head_to_head ()
+            {
+                // Load the drilldown
+                $('#head_to_head_results').load(
+                    '${request.route_url('wordy.head_to_head_stats')}',
+                    {
+                        'player':${the_user.id},
+                        'opponent_name':$('#opponent').val()
+                    });
+                $('#opponent').focus();
+                $('#opponent').select();
+            }
+        </script>
+        <div class="">
+            <form method="post" accept-charset="utf-8" onsubmit="get_head_to_head(); return false;">
+                Enter opponent name for head to head stats:<br />
+                <input type="text" name="opponent" id="opponent" value="" style="display:inline-block;"/>
+                
+                <input type="submit" value="Load" name="form.submitted" class="inbutton" />
+            </form>
+            
+            <div id="head_to_head_results">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+    
+    <div metal:fill-slot="footer">
+        Open source - <a href="http://github.com/teifion/wordy2">http://github.com/teifion/wordy2</a>
+    </div>
+</div>

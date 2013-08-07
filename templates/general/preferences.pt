@@ -1,0 +1,50 @@
+<div metal:use-macro="layout">
+    <style type="text/css" media="screen" metal:fill-slot="css">
+        
+    </style>
+    <div metal:fill-slot="header_buttons" style="display:inline-block;">
+        <a class="inbutton homebutton" href="${request.route_url('wordy.menu')}">Wordy menu</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div metal:fill-slot="content">
+        <div tal:condition="message != ''" id="flash_update" style="border: 1px solid #AAA; margin:10px; padding:10px; text-align:center;">
+            ${message}
+            
+            <script type="text/javascript" charset="utf-8">
+                $(document).ready(function() {
+                    $('#flash_update').show();
+                    $('#flash_update').animate({ backgroundColor: "#0A0" }, 500);
+                    $('#flash_update').animate({ backgroundColor: "#FFF" }, 1500);
+                    setTimeout(function () {$("#flash_update").hide("blind", {}, 500);}, 2000);
+                });
+            </script>
+        </div>
+        
+        <form action="${request.route_url('wordy.preferences')}" method="post" accept-charset="utf-8">
+            
+            <table border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td><label for="matchmaking">Matchmaking</label></td>
+                    <td>
+                        <label for="matchmaking_true">Enable:</label>
+                        <input type="radio" name="matchmaking" id="matchmaking_true" value="true" tal:attributes="checked profile.matchmaking"/>
+                    </td>
+                    <td>
+                        <label for="matchmaking_false">Disable:</label>
+                        <input type="radio" name="matchmaking" id="matchmaking_false" value="false" tal:attributes="checked not profile.matchmaking"/>
+                    </td>
+                    <td>
+                        &nbsp;&nbsp;
+                        If enabled the system is able to match you up against other players searching for a game.
+                    </td>
+                </tr>
+            </table>
+            
+            <input type="submit" value="Save changes" name="form.submitted" class="inbutton" />
+        </form>
+    </div>
+    
+    <div metal:fill-slot="footer">
+        Open source - <a href="http://github.com/teifion/wordy2">http://github.com/teifion/wordy2</a>
+    </div>
+</div>
