@@ -23,9 +23,6 @@ config = {
     "User": None,
     "use_achievements": False,
     
-    "viewtest_class": None,
-    "viewtest_function": "",
-    
     "get_user_func": lambda r: KeyError("No function exists to get the user"),
     "get_user": AUser,
 }
@@ -39,8 +36,6 @@ def example_config_constructor(config):
     wordy.config.config['DBSession'] = DBSession
     wordy.config.config['User'] = models.User
     
-    wordy.config.config['viewtest_class'] = test_f.DBTestClass
-    wordy.config.config['viewtest_function'] = "plugin_path_test"
     wordy.config.config['get_user_func']      = lambda r: r.user
     wordy.config.config['user.id_property']   = "id"
     wordy.config.config['user.name_property'] = "name"
