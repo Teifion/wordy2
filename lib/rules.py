@@ -207,7 +207,7 @@ def test_move(the_game, player_id, letters, db_words=None):
     """
     
     if player_id != the_game.current_player:
-        return "failure:It is not your turn"
+        return "It is not your turn"
     
     # Whose turn is it anyways?
     pnum = the_game.players.index(player_id)
@@ -234,6 +234,7 @@ def test_move(the_game, player_id, letters, db_words=None):
     # Now make sure they're placing the tiles next to existing tiles
     # At least one tiles needs to be non-diagonally next to another
     is_next_to_a_tile = False
+    
     for l, x, y in letters:
         if is_next_to_a_tile: continue
         
@@ -376,7 +377,7 @@ def test_move(the_game, player_id, letters, db_words=None):
             return "{} and {} are not valid words".format(", ".join(invalid[:-1]), invalid[-1])
     
     if len(letters) == 7:
-        words.append("Used 7 tiles at once", 50)
+        words.append(("Used 7 tiles at once", 50))
     
     return words, b
 
