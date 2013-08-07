@@ -27,15 +27,13 @@ config = {
     "get_user": AUser,
 }
 
-def example_config_constructor(config):
-    """This is a copy of how I'm setting up my Wordy configuration"""
+# This is a copy of how I'm setting up my Wordy configuration
+#     from .games import wordy2 as wordy
+#     config.include(wordy, route_prefix="wordy")
+#     wordy.config.config['layout'] = '../../../templates/layouts/viewer.pt'
+#     wordy.config.config['DBSession'] = DBSession
+#     wordy.config.config['User'] = models.User
     
-    from .games import wordy2 as wordy
-    config.include(wordy, route_prefix="wordy")
-    wordy.config.config['layout'] = '../../../templates/layouts/viewer.pt'
-    wordy.config.config['DBSession'] = DBSession
-    wordy.config.config['User'] = models.User
-    
-    wordy.config.config['get_user_func']      = lambda r: r.user
-    wordy.config.config['user.id_property']   = "id"
-    wordy.config.config['user.name_property'] = "name"
+#     wordy.config.config['get_user_func']      = lambda r: r.user
+#     wordy.config.config['user.id_property']   = "id"
+#     wordy.config.config['user.name_property'] = "name"

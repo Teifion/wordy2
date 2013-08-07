@@ -75,8 +75,9 @@ _______________
 _______________
 _______________
 _______________
-""".replace("\n","").replace("_"," ").strip()
+""".replace("\n","").replace("_"," ")
 
+# For easy copy+paste into DB
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ                                                                                                                                                                                                       "
 dummy_board = """
 ___Q___G_______
@@ -94,8 +95,9 @@ T__E___V_____B_
 _____DJINN___U_
 _______E_O___L_
 ____FOPS_D_TALC
-""".replace("\n","").replace("_"," ").strip()
+""".replace("\n","").replace("_"," ")
 
+# For easy copy+paste into DB
 "   Q   G          U P A       CEDI A I          NORITE           L    Y        BEAU DOS  Y    O     G   OA   T SIZIER  RV  WHEW   E OREA  I MU     N  SHUN  MIGRATE  T  E   V     B      DJINN   U        E O   L     FOPS D TALC"
 
 # http://en.wikipedia.org/wiki/Scrabble_letter_distributions
@@ -198,7 +200,12 @@ def tally_scores(the_game, moves, count_tiles=False):
     
     return results
 
-def test_move(the_game, player_id, letters):
+def test_move(the_game, player_id, letters, db_words=None):
+    """
+    You can pass the words to the function to save it making a databse call.
+    This is designed to make it easier to test.
+    """
+    
     if player_id != the_game.current_player:
         return "failure:It is not your turn"
     
@@ -354,7 +361,8 @@ def test_move(the_game, player_id, letters):
     
     # Get a list of these words from the database
     # any word not in the list we get back is an invalid word
-    db_words = get_words_from_db([w[0] for w in words])
+    if db_words is None:
+        db_words = get_words_from_db([w[0] for w in words])
     
     invalid = []
     for w, s in words:

@@ -135,6 +135,11 @@ def make_move(request):
     if new_letters == []:
         return "failure:You didn't make a move"
     
+    print("\n\n")
+    print(new_letters)
+    print("\n\n")
+    return "failure:test"
+    
     request.do_not_log = True
     return db.perform_move(the_game, request.user.id, new_letters)
 
