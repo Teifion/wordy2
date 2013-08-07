@@ -22,6 +22,7 @@ def includeme(config):
     config.add_route('wordy.view_game', '/game/{game_id}')
     config.add_route('wordy.check_turn', '/check_turn/{game_id}')
     config.add_route('wordy.make_move', '/make_move/{game_id}')
+    config.add_route('wordy.test_move', '/test_move/{game_id}')
     
     config.add_view(views.new_game, route_name='wordy.new_game', renderer='templates/game/new_game.pt', permission='loggedin')
     config.add_view(views.view_game, route_name='wordy.view_game', renderer='templates/game/view_game.pt', permission='loggedin')

@@ -125,7 +125,7 @@ def perform_move(the_game, player_id, letters):
     result = rules.test_move(the_game, player_id, letters)
     
     if isinstance(result, str):
-        return result
+        return "failure:{}".format(result)
     else:
         words, new_board = result
     

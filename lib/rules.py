@@ -356,16 +356,16 @@ def test_move(the_game, player_id, letters):
     # any word not in the list we get back is an invalid word
     db_words = get_words_from_db([w[0] for w in words])
     
-    # invalid = []
-    # for w in words:
-    #     if w not in db_words:
-    #         invalid.append(w)
+    invalid = []
+    for w, s in words:
+        if w not in db_words:
+            invalid.append(w.title())
     
-    # if invalid != []:
-    #     if len(invalid) == 1:
-    #         return "{} is not a valid word".format(invalid[0])
-    #     else:
-    #         return "{} and {} are not valid words".format(", ".join(invalid[:-1]), invalid[-1])
+    if invalid != []:
+        if len(invalid) == 1:
+            return "{} is not a valid word".format(invalid[0])
+        else:
+            return "{} and {} are not valid words".format(", ".join(invalid[:-1]), invalid[-1])
     
     if len(letters) == 7:
         words.append("Used 7 tiles at once", 50)
