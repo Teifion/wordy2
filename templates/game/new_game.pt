@@ -3,8 +3,8 @@
         input[type="text"]
         {
             width: 100%;
-            font-size: 24px;
-            height:40px !important;
+            font-size: 20px;
+            height:36px !important;
             text-align:center;
         }
     </style>
@@ -34,6 +34,12 @@
         </div>
         
         <form action="${request.route_url('wordy.new_game')}" method="post" accept-charset="utf-8" style="width:600px; margin: 0 auto;">
+            <a href="${request.route_url('wordy.matchmake')}" class="button" style="margin: 0 auto;">Automatically find me an opponent</a>
+            <br /><br />
+            
+            <h2 style="text-align:center;">Or...</h2>
+            <br /><br />
+            
             You may select up to 3 opponents for your game. Opponents are selected by their usernames (e.g. jordant) and can be upper or lower case.
             <br /><br />
             
@@ -41,9 +47,16 @@
             <input type="text" name="opponent_name2" value="${request.params.get('opponent_name2', '')}"/><br />
             <input type="text" name="opponent_name3" value="${request.params.get('opponent_name3', '')}"/><br />
             
-            <br />
-            <input type="submit" id="main_submit" name="form.submitted" class="button" value="Start game" />
+            <input type="submit" id="main_submit" name="form.submitted" class="button" value="Start game" style="margin: 0 auto;"/>
         </form>
+        <br /><br /><br />
+        
+        <div tal:condition="not profile.matchmaking" style="width:600px; margin: 0 auto; background-color:#FEE;border: 2px solid #A00; padding: 20px;">
+            You've not enabled matchmaking. If you enable it the system will be able to create games for you. You can enable matchmaking through your <a href="${request.route_url('wordy.preferences')}">Wordy preferences</a>.
+            <br /><br />
+            
+            Wordy will automatically not assign you any new games if you've not made any moves in the last two days.
+        </div>
     </div>
     
     <div metal:fill-slot="footer">

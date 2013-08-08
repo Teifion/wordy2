@@ -319,3 +319,19 @@ def install(words):
         config['DBSession'].execute("DELETE FROM wordy_words")
         config['DBSession'].execute(query)
         config['DBSession'].execute("COMMIT")
+
+def find_match(user_id):
+    "First attempt, randomly select someone not us"
+    
+    last_allowed_move = datetime.datetime.now() - datetime.timedelta(days=2)
+    
+    opponent = config['DBSession'].query(WordyProfile.user).filter(
+        WordyProfile.user != user_id,
+        WordyProfile.matchmaking == True,
+        WordyProfile.last_move > last_allowed_move,
+    ).order_by("RANDOM()").first()
+    
+    if opponent is None:
+        return "We couldn't find anybody else using matchmaking who'd made a move in the last two days :("
+    
+    return opponent[0]

@@ -45,6 +45,7 @@ def new_game(request):
         the_user     = the_user,
         message      = message,
         flash_colour = flash_colour,
+        profile      = db.get_profile(the_user.id),
     )
 
 def view_game(request):
@@ -100,6 +101,11 @@ def make_move(request):
     the_user = config['get_user_func'](request)
     game_id = int(request.matchdict['game_id'])
     the_game = db.get_game(game_id)
+    
+    # Most recent move shows they are active
+    profile = db.get_profile(the_user.id)
+    profile.last_move = datetime.datetime.now()
+    config['DBSession'].add(profile)
     
     # Special "moves"
     if "forfeit" in request.params:

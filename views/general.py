@@ -131,3 +131,21 @@ def preferences(request):
         profile  = profile,
         message  = message,
     )
+
+def matchmake(request):
+    layout = get_renderer(config['layout']).implementation()
+    
+    the_user = config['get_user_func'](request)
+    profile = db.get_profile(the_user.id)
+    
+    result = db.find_match(the_user.id)
+    
+    if isinstance(result, str):
+        return dict(
+            title    = "Wordy matchmaking",
+            layout   = layout,
+            message  = result,
+        )
+    
+    game_id = db.new_game([the_user.id, result])
+    return HTTPFound(location=request.route_url("wordy.view_game", game_id=game_id))

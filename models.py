@@ -21,6 +21,7 @@ class WordyProfile(Base):
     user          = Column(Integer, ForeignKey("users.id"), nullable=False, index=True, primary_key=True)
     
     matchmaking   = Column(Boolean, default=False)
+    last_move     = Column(DateTime, default=False)
 
 class WordyGame(Base):
     __tablename__ = 'wordy_games'
