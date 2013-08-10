@@ -77,7 +77,6 @@ def install(request):
 
 def stats(request):
     the_user = config['get_user_func'](request)
-    db.get_profile(the_user.id)
     layout = get_renderer(config['layout']).implementation()
     
     stats = db.get_stats(the_user.id)
