@@ -22,7 +22,7 @@
             
             <div tal:condition="len(game_list) > 0">
                 <strong>Current games in progress:</strong><br />
-                <a href="${request.route_url('wordy.view_game', game_id=g[0])}" tal:repeat="g game_list" class="button">${g[1]} (Turn ${g[2]})</a>
+                <a href="${request.route_url('wordy.view_game', game_id=g[0])}" tal:repeat="g game_list" class="button">${', '.join([names[p] for p in g[3] if p != the_user.id])} (Turn ${g[2]})</a>
                 
                 <br /><br />
                 <a href="${request.route_url('wordy.new_game')}" class="button">New game</a>

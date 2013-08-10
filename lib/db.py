@@ -63,7 +63,7 @@ def get_game_list(user_id, mode):
     else:
         raise KeyError("No handler for mode of '{}'".format(mode))
     
-    return config['DBSession'].query(WordyGame.id, User.name, WordyGame.turn).filter(*filters)
+    return config['DBSession'].query(WordyGame.id, User.name, WordyGame.turn, WordyGame.players).filter(*filters)
 
 def find_user(identifier):
     User = config['User']
@@ -369,6 +369,6 @@ def find_match(profile):
     ).order_by(ordering).first()
     
     if opponent is None:
-        return "We couldn't find anybody else using matchmaking who'd made a move in the last two days :("
+        return "We couldn't find anybody to match you against. Remeber, we'll only match you against someone that's made a move in the last two days, isn't someone you're already playing against and has matchmaking enabled."
     
     return opponent[0]
