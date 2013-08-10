@@ -15,8 +15,13 @@ def menu(request):
     # if none exists
     db.get_profile(the_user.id)
     
-    game_list    = db.get_game_list(the_user.id, mode="Our turn")
+    game_list    = list(db.get_game_list(the_user.id, mode="Our turn"))
     waiting_list = db.get_game_list(the_user.id, mode="Not our turn")
+    
+    names = []
+    for g in game_list:
+        names.extend(g.players)
+    names = set(names)
     
     return dict(
         title        = "Wordy",
@@ -25,6 +30,7 @@ def menu(request):
         
         game_list    = list(game_list),
         waiting_list = list(waiting_list),
+        names        = db.get_names(names)
     )
 
 def install(request):
@@ -138,7 +144,7 @@ def matchmake(request):
     the_user = config['get_user_func'](request)
     profile = db.get_profile(the_user.id)
     
-    result = db.find_match(the_user.id)
+    result = db.find_match(profile)
     
     if isinstance(result, str):
         return dict(

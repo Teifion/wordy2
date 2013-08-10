@@ -20,8 +20,11 @@ class WordyProfile(Base):
     __tablename__ = 'wordy_profiles'
     user          = Column(Integer, ForeignKey("users.id"), nullable=False, index=True, primary_key=True)
     
-    matchmaking   = Column(Boolean, default=False)
+    matchmaking   = Column(Boolean, nullable=False, default=False)
     last_move     = Column(DateTime, default=False)
+    
+    wins          = Column(Integer, default=0, nullable=False)
+    losses        = Column(Integer, default=0, nullable=False)
 
 class WordyGame(Base):
     __tablename__ = 'wordy_games'

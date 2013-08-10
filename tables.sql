@@ -7,8 +7,12 @@ CREATE TABLE wordy_words (
 
 CREATE TABLE wordy_profiles (
     "user" INTEGER NOT NULL,
-    matchmaking BOOLEAN,
+    matchmaking BOOLEAN NOT NULL,
     last_move TIMESTAMP WITHOUT TIME ZONE,
+    
+    wins INTEGER NOT NULL,
+    losses INTEGER NOT NULL,
+    
     PRIMARY KEY ("user"),
     FOREIGN KEY("user") REFERENCES users (id)
 );

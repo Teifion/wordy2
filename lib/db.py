@@ -13,7 +13,7 @@ from ..models import (
     WordyWord,
 )
 
-from sqlalchemy import or_
+from sqlalchemy import or_, not_
 from sqlalchemy import func
 import datetime
 
@@ -167,6 +167,8 @@ def perform_move(the_game, player_id, letters):
     
     # achievements.check_after_move(player_id, words=words, points=points, letters_used=[l[0] for l in letters])
     
+    end_game(the_game)
+    
     # Do we need to end the game?
     if rules.scan_for_end(the_game):
         end_game(the_game)
@@ -201,9 +203,19 @@ def end_game(the_game):
             highplayer = [highplayer, player]
             draw = True
     
+    profiles = config['DBSession'].query(WordyProfile).filter(WordyProfile.user.in_(the_game.players))
+    
     # Declare winner
     if not draw:
         the_game.winner = highplayer
+        
+        for p in profiles:
+            if p.user == highplayer:
+                p.wins += 1
+            else:
+                p.losses += 1
+            config['DBSession'].add(p)
+        
     else:
         the_game.winner = -1
 
@@ -320,16 +332,41 @@ def install(words):
         config['DBSession'].execute(query)
         config['DBSession'].execute("COMMIT")
 
-def find_match(user_id):
-    "First attempt, randomly select someone not us"
+def find_match(profile):
+    """
+    We want to find:
+     - Someone we're not currently playing against
+     - Someone with matchmaking turned on
+     - Someone that's made a move in the last 2 days
+     - Prioritiesd by the difference in their win/loss ratio
+    """
     
+    # First we find who we are currently playing against
+    filters = (
+        "{:d} = ANY(wordy_games.players)".format(profile.user),
+        WordyGame.winner == None,
+    )
+    
+    current_opponents = [profile.user]
+    for game in config['DBSession'].query(WordyGame.players).filter(*filters):
+        current_opponents.extend(game[0])
+    current_opponents = set(current_opponents)
+    
+    # Two days ago
     last_allowed_move = datetime.datetime.now() - datetime.timedelta(days=2)
     
+    # Our winloss ratio
+    winloss = profile.wins/max(profile.losses,1)
+    
+    # Order by
+    ordering = "ABS((wordy_profiles.wins/GREATEST(wordy_profiles.losses,1)) - {}) ASC".format(winloss)
+    
+    # The query that tries to find our opponent
     opponent = config['DBSession'].query(WordyProfile.user).filter(
-        WordyProfile.user != user_id,
+        not_(WordyProfile.user.in_(current_opponents)),
         WordyProfile.matchmaking == True,
         WordyProfile.last_move > last_allowed_move,
-    ).order_by("RANDOM()").first()
+    ).order_by(ordering).first()
     
     if opponent is None:
         return "We couldn't find anybody else using matchmaking who'd made a move in the last two days :("
