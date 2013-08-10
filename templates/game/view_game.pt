@@ -467,6 +467,9 @@
         
         <div id="wordy_frame">
             <div style="float:right; width:340px;" id="wordy_right_nav">
+                <strong>Playing against:</strong> ${", ".join([player_names[p] for p in the_game.players if p != the_user.id])}
+                <br /><br />
+                                
                 <div class="button" onclick="$('#wordy_right_nav').hide(); $('#wordy_bottom_nav').show();">
                     Remove sidebar
                 </div>

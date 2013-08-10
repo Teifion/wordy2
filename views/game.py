@@ -85,6 +85,7 @@ def view_game(request):
     return dict(
         title          = "Wordy",
         layout         = layout,
+        the_user = the_user,
         the_board      = the_board,
         player_letters = list(letters.lower()),
         player_names = player_names,
