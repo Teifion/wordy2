@@ -372,3 +372,40 @@ def find_match(profile):
         return "We couldn't find anybody to match you against. Remeber, we'll only match you against someone that's made a move in the last two days, isn't someone you're already playing against and has matchmaking enabled."
     
     return opponent[0]
+
+def forfeit_game(the_game, user_id):
+    if len(the_game.players) > 2:
+        raise Exception("Unable to forfeit in a game with more than two players")
+    
+    move = WordyMove()
+    move.game = the_game.id
+    move.player = user_id
+    
+    move.word          = "'Forfeited the game'"
+    move.score         = 0
+    move.game_turn     = the_game.turn
+    move.timestamp     = now
+    config['DBSession'].add(move)
+    
+    if the_game.players[0] == user_id:
+        the_game.winner = the_game.players[1]
+        
+    elif the_game.players[1] == user_id:
+        the_game.winner = the_game.players[0]
+
+def premature_end_game(the_game, user_id):
+    if len(the_game.players) > 2:
+        raise Exception("Unable to end a game with more than two players")
+    
+    move = WordyMove()
+    move.game = the_game.id
+    move.player = user_id
+    
+    move.word          = "'End game early'"
+    move.score         = 0
+    move.game_turn     = the_game.turn
+    move.timestamp     = now
+    config['DBSession'].add(move)
+    
+    the_game.winner = the_game.players[the_game.current_player]
+    # achievements.check_after_game_win(the_game.winner, games_won(the_game.winner))

@@ -539,10 +539,13 @@
                     -->
                     
                     <!-- Swap -->
-                    <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
-                        <input type="hidden" name="swap" value="swap" />
-                        <div class="button" onclick="swap_dialog();">Swap letters</div>
-                    </form>
+                    <div tal:conditon="False">
+                        <!-- Currently not implemented -->
+                        <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
+                            <input type="hidden" name="swap" value="swap" />
+                            <div class="button" onclick="swap_dialog();">Swap letters</div>
+                        </form>
+                    </div>
                 </div>
                 
             </div>

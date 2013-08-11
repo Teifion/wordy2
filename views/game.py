@@ -85,16 +85,16 @@ def view_game(request):
     return dict(
         title          = "Wordy",
         layout         = layout,
-        the_user = the_user,
+        the_user       = the_user,
         the_board      = the_board,
         player_letters = list(letters.lower()),
-        player_names = player_names,
+        player_names   = player_names,
         turn_log       = "<br />".join(turn_log),
         the_game       = the_game,
         last_move      = last_move,
         scores         = scores,
         now            = datetime.datetime.now(),
-        spectator      = the_user.id in the_game.players,
+        spectator      = the_user.id not in the_game.players,
         your_turn      = the_user.id == the_game.current_player and the_game.winner is None,
     )
 
@@ -117,13 +117,13 @@ def make_move(request):
         db.premature_end_game(the_game, the_user.id)
         return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
     
-    if "swap" in request.params:
-        db.swap_letters(the_game, the_user.id)
-        return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
+    # if "swap" in request.params:
+    #     db.swap_letters(the_game, the_user.id)
+    #     return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
     
-    if "pass" in request.params:
-        db.pass_turn(the_game, the_user.id)
-        return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
+    # if "pass" in request.params:
+    #     db.pass_turn(the_game, the_user.id)
+    #     return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
     
     player_number = the_game.players.index(the_user.id)
     player_letters = the_game.tiles[player_number]
