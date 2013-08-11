@@ -111,19 +111,15 @@ def make_move(request):
     # Special "moves"
     if "forfeit" in request.params:
         db.forfeit_game(the_game, the_user.id)
-        return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
+        return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     if "end_game" in request.params:
         db.premature_end_game(the_game, the_user.id)
-        return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
+        return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     # if "swap" in request.params:
     #     db.swap_letters(the_game, the_user.id)
-    #     return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
-    
-    # if "pass" in request.params:
-    #     db.pass_turn(the_game, the_user.id)
-    #     return HTTPFound(location = request.route_url('wordy.game', game_id=the_game.id))
+    #     return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     player_number = the_game.players.index(the_user.id)
     player_letters = the_game.tiles[player_number]

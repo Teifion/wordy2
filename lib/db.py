@@ -384,7 +384,7 @@ def forfeit_game(the_game, user_id):
     move.word          = "'Forfeited the game'"
     move.score         = 0
     move.game_turn     = the_game.turn
-    move.timestamp     = now
+    move.timestamp     = datetime.datetime.now()
     config['DBSession'].add(move)
     
     if the_game.players[0] == user_id:
@@ -404,7 +404,7 @@ def premature_end_game(the_game, user_id):
     move.word          = "'End game early'"
     move.score         = 0
     move.game_turn     = the_game.turn
-    move.timestamp     = now
+    move.timestamp     = datetime.datetime.now()
     config['DBSession'].add(move)
     
     the_game.winner = the_game.players[the_game.current_player]

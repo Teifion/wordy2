@@ -539,7 +539,7 @@
                     -->
                     
                     <!-- Swap -->
-                    <div tal:conditon="False">
+                    <div tal:condition="False">
                         <!-- Currently not implemented -->
                         <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
                             <input type="hidden" name="swap" value="swap" />
