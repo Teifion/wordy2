@@ -146,10 +146,11 @@ def perform_move(the_game, player_id, letters):
     the_game.tiles = tuple(the_game.tiles)
     
     # Set next player
-    if pnum == the_game.players[-1]:
-        pnum = -1
+    try:
+        the_game.current_player = the_game.players[pnum + 1]
+    except IndexError:
+        the_game.current_player = the_game.players[0]
     
-    the_game.current_player = the_game.players[pnum + 1]
     
     # Now add the move
     now = datetime.datetime.now()
@@ -166,8 +167,6 @@ def perform_move(the_game, player_id, letters):
         config['DBSession'].add(move)
     
     # achievements.check_after_move(player_id, words=words, points=points, letters_used=[l[0] for l in letters])
-    
-    end_game(the_game)
     
     # Do we need to end the game?
     if rules.scan_for_end(the_game):

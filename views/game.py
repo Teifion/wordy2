@@ -173,3 +173,11 @@ def check_turn(request):
     if rules.current_player(the_game) == the_user.id:
         return "True"
     return "False"
+
+def check_status(request):
+    game_id = int(request.matchdict['game_id'])
+    the_game = db.get_game(game_id)
+    # pturn = func.player_turn(the_game)
+    
+    request.do_not_log = True
+    return str(the_game.current_player == request.user.id)

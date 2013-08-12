@@ -20,6 +20,7 @@ def includeme(config):
     config.add_route('wordy.rematch', '/rematch/{game_id}')
     
     config.add_route('wordy.view_game', '/game/{game_id}')
+    config.add_route('wordy.check_status', '/check_status/{game_id}')
     config.add_route('wordy.check_turn', '/check_turn/{game_id}')
     config.add_route('wordy.make_move', '/make_move/{game_id}')
     config.add_route('wordy.test_move', '/test_move/{game_id}')
@@ -32,5 +33,6 @@ def includeme(config):
     config.add_view(views.make_move, route_name='wordy.make_move', renderer='string', permission='loggedin')
     config.add_view(views.rematch, route_name='wordy.rematch', renderer='string', permission='loggedin')
     config.add_view(views.check_turn, route_name='wordy.check_turn', renderer='string', permission='loggedin')
+    config.add_view(views.check_status, route_name='wordy.check_status', renderer='string', permission='loggedin')
     
     return config

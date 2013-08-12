@@ -369,16 +369,6 @@
                 }
             }
             
-            function check_turn()
-            {
-                var my_turn = $('#my_turn').html();
-                
-                if (my_turn == "True")
-                {
-                    location.reload();
-                }
-            }
-            
             function forfeit_dialog ()
             {
                 $("#forfeit_dialog").dialog({
@@ -459,6 +449,32 @@
                     }
                 });
             }
+            
+            function setIntervalX(callback, delay, repetitions, slow_delay) {
+                var x = 0;
+                var intervalID = window.setInterval(function () {
+                   callback();
+                   if (++x === repetitions) {
+                       window.clearInterval(intervalID);
+                       var newInterval = window.setInterval("load_check_turn_html();", slow_delay);
+                   }
+                }, delay);
+            }
+            
+            function load_check_turn_html()
+            {
+                $('#my_turn').load('${request.route_url('wordy.check_status', game_id=the_game.id)}', {}, check_turn);
+            }
+            
+            function check_turn()
+            {
+                var my_turn = $('#my_turn').html();
+                
+                if (my_turn == "True")
+                {
+                    location.reload();
+                }
+            }
         </script>
         
         <div id="panel_response" style="display:none;" title="Failure">
@@ -475,8 +491,10 @@
                 </div>
                 <div tal:condition="your_turn == False and the_game.winner == None and spectator == False">The game will automatically check for new moves every minute and then allow you to make a move.
                     <script type="text/javascript">
-                        // Check every 30 seconds
-                        var page_check = setInterval("$('#my_turn').load('${request.route_url('games/wordy/check_status', game_id=the_game.id)}', {}, check_turn);", 1000*30);
+                        // Check every 10 seconds then every 30 seconds
+                        setIntervalX(function () {
+                            load_check_turn_html()
+                        }, 1000*10, 6, 1000*30);
                     </script>
                 </div>
                 

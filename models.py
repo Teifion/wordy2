@@ -68,5 +68,4 @@ class WordyMove(Base):
 
 class WordyWord(Base):
     __tablename__ = 'wordy_words'
-    id   = Column(Integer, primary_key=True)
-    word = Column(String, nullable=False)
+    word = Column(String, nullable=False, primary_key=True)
