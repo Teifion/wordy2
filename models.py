@@ -21,7 +21,7 @@ class WordyProfile(Base):
     user          = Column(Integer, ForeignKey("users.id"), nullable=False, index=True, primary_key=True)
     
     matchmaking   = Column(Boolean, nullable=False, default=False)
-    last_move     = Column(DateTime, default=False)
+    last_move     = Column(DateTime)
     
     wins          = Column(Integer, default=0, nullable=False)
     losses        = Column(Integer, default=0, nullable=False)
