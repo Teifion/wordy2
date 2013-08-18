@@ -8,6 +8,7 @@ from ..lib import (
 from ..models import (
     WordyMove,
     WordyGame,
+    WordyWord,
 )
 
 from ..config import config
@@ -67,6 +68,9 @@ class DBTester(DBTestClass):
         config['DBSession'].add(WG(current_player=u3, players=[u3,u2,u1]))
         config['DBSession'].add(WG(current_player=u3, players=[u3,u2]))
         
+        config['DBSession'].add(WordyWord(word="FLAT"))
+        config['DBSession'].add(WordyWord(word="TURN"))
+        
         # db.get_game_list(user_id, mode="All")
         r = list(db.get_game_list(user_id=u1, mode="Ended"))
         self.assertEqual(len(r), 2)
@@ -77,14 +81,53 @@ class DBTester(DBTestClass):
         r = list(db.get_game_list(user_id=u1, mode="Not our turn"))
         self.assertEqual(len(r), 2)
         
+        self.assertRaises(KeyError, db.get_game_list, 
+            user_id=u1,
+            mode="Not a valid move"
+        )
         
-        # db.find_user(identifier)
-        # db.new_game(players, rematch=None)
-        # db.get_game(game_id)
-        # db.get_moves(game_id)
-        # db.perform_move(the_game, player_id, letters)
-        # db.get_names(players)
-        # db.end_game(the_game)
+        # Now try making a new game
+        game_id = db.new_game(players=[u1, u2], rematch=None)
+        self.assertNotEqual(None, game_id)
+        
+        the_game = db.get_game(game_id=game_id)
+        self.assertNotEqual(None, the_game)
+        
+        # Now for a game that doesn't exist
+        self.assertRaises(ValueError, db.get_game,
+            game_id=-1
+        )
+        
+        the_game.tiles = ["FLATBCD", "URNABCD"]
+        result = db.perform_move(the_game, u1, letters=[
+            ['F', 7, 7],
+            ['L', 8, 7],
+            ['A', 9, 7],
+            ['T', 10, 7],
+        ])
+        self.assertEqual(result, "success:")
+        
+        # Need to set it to a list so we don't try to alter
+        # a tuple
+        the_game.tiles = list(the_game.tiles)
+        
+        result = db.perform_move(the_game, u2, letters=[
+            ['U', 10, 8],
+            ['R', 10, 9],
+            ['N', 10, 10],
+        ])
+        self.assertEqual(result, "success:")
+        
+        # Now we can try getting moves
+        moves = list(db.get_moves(game_id))
+        self.assertEqual(len(moves), 2)
+        
+        # Lets end it
+        self.assertEqual(the_game.winner, None)
+        db.end_game(the_game)
+        
+        self.assertEqual(the_game.winner, u1)
+        
         # db.completed_games(user_id, opponent_id=None)
         # db.games_in_progress(user_id, opponent_id=None)
         # db.games_won(user_id, opponent_id=None)
@@ -96,3 +139,24 @@ class DBTester(DBTestClass):
         # db.find_match(profile)
         # db.forfeit_game(the_game, user_id)
         # db.premature_end_game(the_game, user_id)
+    
+    def test_users(self):
+        User = config['User']
+        
+        u1, u2, u3 = config['DBSession'].query(User.id, User.name).limit(3)
+        
+        names = db.get_names(players=[u1.id, u2.id, u3.id])
+        self.assertEqual(names, {
+            u1.id: u1.name,
+            u2.id: u2.name,
+            u3.id: u3.name,
+        })
+        
+        found_id = db.find_user(identifier=u1.id)
+        found_name = db.find_user(identifier=u1.id)
+        
+        self.assertEqual(found_id.id, found_name.id)
+        self.assertEqual(found_id.name, found_name.name)
+        
+        self.assertEqual(found_id.id, u1.id)
+        self.assertEqual(found_id.name, u1.name)
