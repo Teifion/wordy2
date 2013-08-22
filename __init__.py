@@ -1,3 +1,18 @@
+def notifications():
+    try:
+        from ...communique import register, send
+    except ImportError:
+        try:
+            from ..communique import register, send
+        except ImportError:
+            return
+    
+    from .notifications import forward_to_game, forward_to_profile
+    
+    register('wordy.new_game', 'New game', 'new_game.png', forward_to_game)
+    register('wordy.new_move', 'New move', 'new_move.png', forward_to_game)
+    register('wordy.game_lost', 'Game lost', 'game_lost.png', forward_to_profile)
+
 def includeme(config):
     from . import views
     
@@ -34,5 +49,7 @@ def includeme(config):
     config.add_view(views.rematch, route_name='wordy.rematch', renderer='string', permission='loggedin')
     config.add_view(views.check_turn, route_name='wordy.check_turn', renderer='string', permission='loggedin')
     config.add_view(views.check_status, route_name='wordy.check_status', renderer='string', permission='loggedin')
+    
+    notifications()
     
     return config
