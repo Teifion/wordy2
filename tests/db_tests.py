@@ -60,6 +60,7 @@ class DBTester(DBTestClass):
         # Delete all existing games
         config['DBSession'].execute('DELETE FROM wordy_moves')
         config['DBSession'].execute('DELETE FROM wordy_games')
+        config['DBSession'].execute('DELETE FROM wordy_words')
         
         config['DBSession'].add(WG(current_player=u1, players=[u1,u2]))
         config['DBSession'].add(WG(current_player=u1, players=[u1,u2], winner=u1))
@@ -123,21 +124,45 @@ class DBTester(DBTestClass):
         self.assertEqual(len(moves), 2)
         
         # Lets end it
+        the_game.tiles = ["ABC", ""]
         self.assertEqual(the_game.winner, None)
         db.end_game(the_game)
         
+        self.assertEqual(the_game.winner, u2)
+        
+        # Un-end it
+        the_game.winner = None
+        config['DBSession'].add(the_game)
+        
+        db.forfeit_game(the_game, user_id=u2)
+        print(the_game.winner)
         self.assertEqual(the_game.winner, u1)
         
-        # db.completed_games(user_id, opponent_id=None)
-        # db.games_in_progress(user_id, opponent_id=None)
-        # db.games_won(user_id, opponent_id=None)
-        # db.games_lost(user_id, opponent_id=None)
-        # db.games_drawn(user_id, opponent_id=None)
-        # db.get_stats(user_id, opponent_id=None)
+        
+        # Check these run without error
+        db.completed_games(user_id=u1, opponent_id=None)
+        db.completed_games(user_id=u1, opponent_id=u2)
+        
+        db.games_in_progress(user_id=u1, opponent_id=None)
+        db.games_in_progress(user_id=u1, opponent_id=u2)
+        
+        db.games_won(user_id=u1, opponent_id=None)
+        db.games_won(user_id=u1, opponent_id=u2)
+        
+        db.games_lost(user_id=u1, opponent_id=None)
+        db.games_lost(user_id=u1, opponent_id=u2)
+        
+        db.games_drawn(user_id=u1, opponent_id=None)
+        db.games_drawn(user_id=u1, opponent_id=u2)
+        
+        db.get_stats(user_id=u1, opponent_id=None)
+        db.get_stats(user_id=u1, opponent_id=u2)
+        
+        
         # db.check_for_install()
         # db.install(words)
         # db.find_match(profile)
-        # db.forfeit_game(the_game, user_id)
+        
         # db.premature_end_game(the_game, user_id)
     
     def test_users(self):
