@@ -1,4 +1,4 @@
-def notifications():
+def wordy_notifications():
     try:
         from ...communique import register, send
     except ImportError:
@@ -9,9 +9,10 @@ def notifications():
     
     from .notifications import forward_to_game, forward_to_profile
     
-    register('wordy.new_game', 'New game', 'new_game.png', forward_to_game)
-    register('wordy.new_move', 'New move', 'new_move.png', forward_to_game)
-    register('wordy.game_lost', 'Game lost', 'game_lost.png', forward_to_profile)
+    register('wordy.new_game', 'New game', 'http://localhost:6543/static/images/communique/wordy.png', forward_to_game)
+    register('wordy.new_move', 'New move', 'http://localhost:6543/static/images/communique/wordy.png', forward_to_game)
+    register('wordy.end_game', 'Game over', 'http://localhost:6543/static/images/communique/wordy.png', forward_to_game)
+    register('wordy.win_game', 'Victory!', 'http://localhost:6543/static/images/communique/wordy.png', forward_to_game)
 
 def includeme(config):
     from . import views
@@ -50,6 +51,6 @@ def includeme(config):
     config.add_view(views.check_turn, route_name='wordy.check_turn', renderer='string', permission='loggedin')
     config.add_view(views.check_status, route_name='wordy.check_status', renderer='string', permission='loggedin')
     
-    notifications()
+    wordy_notifications()
     
     return config

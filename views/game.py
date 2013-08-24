@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 from pyramid.httpexceptions import HTTPFound
 
 from pyramid.renderers import get_renderer
@@ -11,6 +12,18 @@ from ..lib import (
 from ..models import WordyMove
 
 from ..config import config
+
+try:
+    try:
+        from ....communique import send as com_send
+    except ImportError:
+        try:
+            from ...communique import send as com_send
+        except ImportError:
+            raise
+except Exception as e:
+    def com_send(*args, **kwargs):
+        pass
 
 def new_game(request):
     the_user = config['get_user_func'](request)
@@ -37,6 +50,9 @@ def new_game(request):
         
         else:
             game_id = db.new_game([the_user.id] + found_opponents)
+            
+            for o in found_opponents:
+                com_send(o, "wordy.new_game", "{} has started a game against you".format(the_user.name), str(game_id), timedelta(hours=24))
             return HTTPFound(location=request.route_url("wordy.view_game", game_id=game_id))
     
     return dict(
@@ -111,10 +127,20 @@ def make_move(request):
     # Special "moves"
     if "forfeit" in request.params:
         db.forfeit_game(the_game, the_user.id)
+        
+        for p in the_game.players:
+            if p == the_user.id: continue
+            com_send(p, "wordy.end_game", "{} forfeited the game".format(the_user.name), str(game_id), timedelta(hours=24))
+        
         return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     if "end_game" in request.params:
         db.premature_end_game(the_game, the_user.id)
+        
+        for p in the_game.players:
+            if p == the_user.id: continue
+            com_send(p, "wordy.end_game", "{} ended the game".format(the_user.name), str(game_id), timedelta(hours=24))
+        
         return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     # if "swap" in request.params:
@@ -139,7 +165,12 @@ def make_move(request):
         return "failure:You didn't make a move"
     
     request.do_not_log = True
-    return db.perform_move(the_game, request.user.id, new_letters)
+    r = db.perform_move(the_game, request.user.id, new_letters)
+    
+    if r == "success:":
+        com_send(the_game.current_player, "wordy.new_move", "{} made a move".format(the_user.name), str(game_id), timedelta(hours=24))
+    
+    return r
 
 def rematch(request):
     the_user = config['get_user_func'](request)
