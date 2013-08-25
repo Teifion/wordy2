@@ -514,7 +514,12 @@
                     
                     <div style="font-size:1.1em;">
                         <br />
-                        Winner: ${player_names[the_game.winner]}
+                        <span tal:condition="the_game.winner != -1">
+                            Winner: ${player_names[the_game.winner]}
+                        </span>
+                        <span tal:condition="the_game.winner == -1">
+                            The game was a draw
+                        </span>
                     </div>
                 </div>
                 

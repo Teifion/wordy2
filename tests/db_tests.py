@@ -135,9 +135,7 @@ class DBTester(DBTestClass):
         config['DBSession'].add(the_game)
         
         db.forfeit_game(the_game, user_id=u2)
-        print(the_game.winner)
         self.assertEqual(the_game.winner, u1)
-        
         
         # Check these run without error
         db.completed_games(user_id=u1, opponent_id=None)

@@ -438,7 +438,7 @@ def swap_letters(the_game, player_id):
     
     moves = [m[0] for m in moves]
     
-    if all(moves):
+    if all(moves) and len(moves) > len(the_game.players):
         end_game(the_game)
     
     else:
