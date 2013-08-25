@@ -86,7 +86,9 @@ def view_game(request):
     
     turn_log = []
     for m in game_moves:
-        if m.score == 1:
+        if m.swap:
+            temp = "{} swapped their tiles"
+        elif m.score == 1:
             temp = "{} played {} for {} point"
         else:
             temp = "{} played {} for {} points"
@@ -143,9 +145,10 @@ def make_move(request):
         
         return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
-    # if "swap" in request.params:
-    #     db.swap_letters(the_game, the_user.id)
-    #     return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
+    if "swap" in request.params:
+        db.swap_letters(the_game, the_user.id)
+        com_send(the_game.current_player, "wordy.new_move", "{} swapped their tiles".format(the_user.name), str(game_id), timedelta(hours=24))
+        return HTTPFound(location = request.route_url('wordy.view_game', game_id=the_game.id))
     
     player_number = the_game.players.index(the_user.id)
     player_letters = the_game.tiles[player_number]

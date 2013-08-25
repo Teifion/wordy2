@@ -408,3 +408,46 @@ def premature_end_game(the_game, user_id):
     
     the_game.winner = the_game.players[the_game.current_player]
     # achievements.check_after_game_win(the_game.winner, games_won(the_game.winner))
+
+def swap_letters(the_game, player_id):
+    pnum = the_game.players.index(player_id)
+    
+    if the_game.players[pnum] == player_id:
+        full_bag = the_game.game_bag + the_game.tiles[pnum]
+        the_game.tiles[pnum], the_game.game_bag = rules.pick_from_bag(full_bag, tiles=7)
+        the_game.tiles = tuple(the_game.tiles)
+    else:
+        return
+    
+    # Add move
+    move = WordyMove()
+    
+    move.game = the_game.id
+    move.player = player_id
+    
+    move.swap          = True
+    move.word          = ""
+    move.score         = 0
+    move.game_turn     = the_game.turn
+    move.timestamp     = datetime.datetime.now()
+    config['DBSession'].add(move)
+    
+    # X = nu8mber of players
+    # If the last X moves are all swap tiles, end the game
+    moves = tuple(config['DBSession'].query(WordyMove.swap).filter(WordyMove.game == the_game.id).order_by(WordyMove.id.desc()).limit(len(the_game.players)+1))
+    
+    moves = [m[0] for m in moves]
+    
+    if all(moves):
+        end_game(the_game)
+    
+    else:
+        the_game.turn += 1
+        
+        # Set next player
+        try:
+            the_game.current_player = the_game.players[pnum + 1]
+        except IndexError:
+            the_game.current_player = the_game.players[0]
+    
+    config['DBSession'].add(the_game)

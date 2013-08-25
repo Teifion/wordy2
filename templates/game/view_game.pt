@@ -489,7 +489,7 @@
                 <div class="button" onclick="$('#wordy_right_nav').hide(); $('#wordy_bottom_nav').show();">
                     Remove sidebar
                 </div>
-                <div tal:condition="your_turn == False and the_game.winner == None and spectator == False">The game will automatically check for new moves every minute and then allow you to make a move.
+                <div tal:condition="your_turn == False and the_game.winner == None and spectator == False and False">The game will automatically check for new moves every minute and then allow you to make a move.
                     <script type="text/javascript">
                         // Check every 10 seconds then every 30 seconds
                         setIntervalX(function () {
@@ -557,13 +557,10 @@
                     -->
                     
                     <!-- Swap -->
-                    <div tal:condition="False">
-                        <!-- Currently not implemented -->
-                        <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
-                            <input type="hidden" name="swap" value="swap" />
-                            <div class="button" onclick="swap_dialog();">Swap letters</div>
-                        </form>
-                    </div>
+                    <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
+                        <input type="hidden" name="swap" value="swap" />
+                        <div class="button" onclick="swap_dialog();">Swap letters</div>
+                    </form>
                 </div>
                 
             </div>

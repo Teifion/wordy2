@@ -61,6 +61,7 @@ class WordyMove(Base):
     game          = Column(Integer, ForeignKey("wordy_games.id"), nullable=False)
     player        = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     
+    swap          = Column(Boolean, nullable=False, default=False)
     word          = Column(String, nullable=False)
     score         = Column(Integer, nullable=False)
     game_turn     = Column(Integer, nullable=False)
