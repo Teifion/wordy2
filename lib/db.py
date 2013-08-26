@@ -396,6 +396,9 @@ def premature_end_game(the_game, user_id):
     if len(the_game.players) > 2:
         raise Exception("Unable to end a game with more than two players")
     
+    if user_id not in the_game.players:
+        raise KeyError("Only a player can end a game early")
+    
     move = WordyMove()
     move.game = the_game.id
     move.player = user_id
@@ -406,7 +409,12 @@ def premature_end_game(the_game, user_id):
     move.timestamp     = datetime.datetime.now()
     config['DBSession'].add(move)
     
-    the_game.winner = the_game.players[the_game.current_player]
+    # Winner is whoever's turn it's not currently
+    if the_game.players[0] == the_game.current_player:
+        the_game.winner = the_game.players[1]
+    else:
+        the_game.winner = the_game.players[0]
+    
     # achievements.check_after_game_win(the_game.winner, games_won(the_game.winner))
 
 def swap_letters(the_game, player_id):

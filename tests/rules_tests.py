@@ -55,8 +55,8 @@ class RulesTester(unittest.TestCase):
         self.assertEqual(scores[2], 2)
     
     def test_move(self):
-        """This test case first checks a successful move will work, then ensures
-        that every form of failure is correctly picked up"""
+        # This test case first checks a successful move will work, then ensures
+        # that every form of failure is correctly picked up
         
         def parts(board=" "*255):
             return WordyGame(

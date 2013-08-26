@@ -39,14 +39,42 @@ class DBTester(DBTestClass):
     def test_profiles(self):
         # Get a user to perform the test with
         User = config['User']
-        uid = config['DBSession'].query(User.id).first()[0]
+        u1, u2, u3 = [u[0] for u in config['DBSession'].query(User.id).limit(3)]
         
         # First delete the possible profile
         config['DBSession'].execute('DELETE FROM wordy_profiles')
         
         # Now try to add a new profile, we've deleted the existing profile
         # so it will need to create a new one anyway
-        db.get_profile(user_id=uid)
+        the_profile = db.get_profile(user_id=u1)
+        
+        # Now lets see what happens with matchmaking
+        # it should fail because no other profiles have it
+        r = db.find_match(the_profile)
+        self.assertEqual(isinstance(r, str), True)
+        
+        # Lets add a new one then!
+        p2 = db.get_profile(user_id=u2)
+        p3 = db.get_profile(user_id=u3)
+        
+        # P2 needs some wins!
+        p2.wins = 3
+        p2.losses = 1
+        config['DBSession'].add(p2)
+        
+        # Should still come back as false, we never enabled matchmaking
+        r = db.find_match(the_profile)
+        self.assertEqual(isinstance(r, str), True)
+        
+        p2.matchmaking = True
+        p2.last_move = datetime.datetime.now()
+        p3.matchmaking = True
+        p3.last_move = datetime.datetime.now()
+        config['DBSession'].add(p2)
+        config['DBSession'].add(p3)
+        
+        r = db.find_match(the_profile)
+        self.assertEqual(r, u3)
     
     def test_game_lists(self):
         def WG(**kwargs):
@@ -156,12 +184,29 @@ class DBTester(DBTestClass):
         db.get_stats(user_id=u1, opponent_id=None)
         db.get_stats(user_id=u1, opponent_id=u2)
         
+        # Un-end it again so we can end it early!
+        the_game.winner = None
+        config['DBSession'].add(the_game)
         
-        # db.check_for_install()
-        # db.install(words)
-        # db.find_match(profile)
+        # First get the wrong player to end it
+        self.assertRaises(KeyError, db.premature_end_game, the_game, u3)
         
-        # db.premature_end_game(the_game, user_id)
+        db.premature_end_game(the_game, u1)
+        
+        self.assertEqual(the_game.winner, u2)
+    
+    def test_install_funcs(self):
+        config['DBSession'].execute('DELETE FROM wordy_words')
+        
+        # Check for lack of install
+        r = db.check_for_install()
+        self.assertEqual(r, False, msg="Wordy incorrectly assumes the game is installed")
+        
+        db.install("This is Installed")
+        
+        # Now it should all be hunky dory
+        r = db.check_for_install()
+        self.assertEqual(r, True, msg="Wordy incorrectly assumes the game is not installed, this may be a bug in the install function")
     
     def test_users(self):
         User = config['User']
