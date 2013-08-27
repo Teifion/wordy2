@@ -147,8 +147,6 @@ vowels = "AEIOU"
 def pick_from_bag(the_bag, tiles=7, attempt=7, existing_tiles=""):
     if type(the_bag) == str:
         new_bag = list(the_bag)
-    else:
-        new_bag = list(the_bag)
     
     letters = []
     
