@@ -184,6 +184,15 @@ class DBTester(DBTestClass):
         db.get_stats(user_id=u1, opponent_id=None)
         db.get_stats(user_id=u1, opponent_id=u2)
         
+        # the_game.tiles = list(the_game.tiles)
+        the_game.game_bag = str(the_game.game_bag)
+        the_game.tiles = list(the_game.tiles)
+        db.swap_letters(the_game, player_id=u1)
+        
+        the_game.game_bag = str(the_game.game_bag)
+        the_game.tiles = list(the_game.tiles)
+        db.swap_letters(the_game, player_id=u2)
+        
         # Un-end it again so we can end it early!
         the_game.winner = None
         config['DBSession'].add(the_game)
