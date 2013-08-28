@@ -51,7 +51,7 @@ class DBTester(DBTestClass):
         # Now lets see what happens with matchmaking
         # it should fail because no other profiles have it
         r = db.find_match(the_profile)
-        self.assertEqual(isinstance(r, str), True)
+        self.assertTrue(isinstance(r, str))
         
         # Lets add a new one then!
         p2 = db.get_profile(user_id=u2)
@@ -64,7 +64,7 @@ class DBTester(DBTestClass):
         
         # Should still come back as false, we never enabled matchmaking
         r = db.find_match(the_profile)
-        self.assertEqual(isinstance(r, str), True)
+        self.assertTrue(isinstance(r, str))
         
         p2.matchmaking = True
         p2.last_move = datetime.datetime.now()
