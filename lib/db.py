@@ -181,6 +181,9 @@ def perform_move(the_game, player_id, letters):
     return "success:"
 
 def get_names(players):
+    if len(players) == 0:
+        return []
+    
     names = {}
     for i, n in config['DBSession'].query(config['User'].id, config['User'].name).filter(config['User'].id.in_(players)):
         names[i] = n
