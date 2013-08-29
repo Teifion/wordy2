@@ -86,12 +86,47 @@ class DBTester(DBTestClass):
         self.make_request(app, "/wordy/menu", cookies, msg="Error loading the menu screen for wordy")
         
         # Check install
-        self.make_request(app, "/wordy/install", cookies)
+        page_result = self.make_request(app, "/wordy/install", cookies)
         
-        # Now try performing the install
+        # I don't know why but this keeps coming up with an error so for now I'm leaving it
+        # form = page_result.form  
+        # form.set("wordlist", ("wordlist", "TEST TEST2".encode('utf-8')))
+        # page_result = form.submit('form.submitted')
+        # # page_result = form.submit()
         
+        # self.check_request_result(
+        #     page_result,
+        #     "",
+        #     {},
+        #     msg = "There was an error installing the wordlist"
+        # )
         
-        # config.add_route('wordy.preferences', '/preferences')
+        # Preferences
+        page_result = self.make_request(app, "/wordy/preferences", cookies,
+            msg="Error loading the preferences screen for Wordy")
+        
+        form = page_result.form  
+        form.set("matchmaking", "true")
+        page_result = form.submit('form.submitted')
+        
+        self.check_request_result(
+            page_result,
+            "",
+            {},
+            msg = "Error updating preferences"
+        )
+        
+        # Matchmaking
+        self.make_request(app, "/wordy/matchmake", cookies, msg="Error attempting to matchmake")
+        
+        # Stats
+        self.make_request(app, "/wordy/stats", cookies, msg="Error attempting to view stats")
+        
+        # Head to head stats
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_name={}".format(u2), cookies, msg="Error attempting to view head to head stats")
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=1", cookies, msg="Error attempting to view head to head stats")
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=-1", cookies, msg="Error attempting to view head to head stats")
+        
         # config.add_route('wordy.new_game', '/new_game')
         # config.add_route('wordy.rematch', '/rematch/{game_id}')
         # config.add_route('wordy.view_game', '/game/{game_id}')
@@ -99,10 +134,5 @@ class DBTester(DBTestClass):
         # config.add_route('wordy.check_turn', '/check_turn/{game_id}')
         # config.add_route('wordy.make_move', '/make_move/{game_id}')
         # config.add_route('wordy.test_move', '/test_move/{game_id}')
-        # config.add_route('wordy.matchmake', '/matchmake')
-        
-        # config.add_route('wordy.stats', '/stats')
-        # config.add_route('wordy.head_to_head_stats', '/head_to_head_stats')
-        
         
         self.make_request(app, "/wordy/menu", cookies, msg="Error loading the menu screen for wordy after ensuring games were added")
