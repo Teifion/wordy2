@@ -5,6 +5,7 @@ from ..lib import (
     db,
 )
 
+import re
 from pyramid import testing
 from .. import notifications
 from pyramid.httpexceptions import HTTPFound
@@ -79,7 +80,22 @@ class DBTester(DBTestClass):
             config['DBSession'].execute('COMMIT')
         
         User = config['User']
-        u1, u2 = [u[0] for u in config['DBSession'].query(User.name).limit(2)]
+        u1, u2, u3 = config['DBSession'].query(User.id, User.name).limit(3)
+        
+        with transaction.manager:
+            p1 = db.get_profile(user_id=u1.id)
+            p2 = db.get_profile(user_id=u2.id)
+            p3 = db.get_profile(user_id=u3.id)
+            
+            p1.matchmaking = True
+            p1.last_move = datetime.datetime.now()
+            p2.matchmaking = True
+            p2.last_move = datetime.datetime.now()
+            p3.matchmaking = True
+            p3.last_move = datetime.datetime.now()
+            config['DBSession'].add(p1)
+            config['DBSession'].add(p2)
+            config['DBSession'].add(p3)
         
         app, cookies = self.get_app()
         
@@ -113,19 +129,18 @@ class DBTester(DBTestClass):
             page_result,
             "",
             {},
-            msg = "Error updating preferences"
+            msg = "Error updaing preferences"
         )
         
         # Matchmaking
-        self.make_request(app, "/wordy/matchmake", cookies, msg="Error attempting to matchmake")
+        self.make_request(app, "/wordy/matchmake", cookies, msg="Error attempting to matchmake", expect_forward = re.compile(r"wordy/game/[0-9]+"))
         
         # Stats
         self.make_request(app, "/wordy/stats", cookies, msg="Error attempting to view stats")
         
         # Head to head stats
-        self.make_request(app, "/wordy/head_to_head_stats?opponent_name={}".format(u2), cookies, msg="Error attempting to view head to head stats")
-        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=1", cookies, msg="Error attempting to view head to head stats")
-        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=-1", cookies, msg="Error attempting to view head to head stats")
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_name={}".format(u2.name), cookies, msg="Error attempting to view head to head stats")
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=%d" % u2.id, cookies, msg="Error attempting to view head to head stats")
         
         # config.add_route('wordy.new_game', '/new_game')
         # config.add_route('wordy.rematch', '/rematch/{game_id}')
