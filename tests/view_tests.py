@@ -119,7 +119,7 @@ class DBTester(DBTestClass):
         
         # Preferences
         page_result = self.make_request(app, "/wordy/preferences", cookies,
-            msg="Error loading the preferences screen for Wordy")
+            msg="Error loading the preferences screen")
         
         form = page_result.form  
         form.set("matchmaking", "true")
@@ -133,16 +133,47 @@ class DBTester(DBTestClass):
         )
         
         # Matchmaking
-        self.make_request(app, "/wordy/matchmake", cookies, msg="Error attempting to matchmake", expect_forward = re.compile(r"wordy/game/[0-9]+"))
+        self.make_request(app, "/wordy/matchmake", cookies,
+            msg="Error attempting to matchmake",
+            expect_forward = re.compile(r"wordy/game/[0-9]+")
+        )
         
         # Stats
         self.make_request(app, "/wordy/stats", cookies, msg="Error attempting to view stats")
         
         # Head to head stats
-        self.make_request(app, "/wordy/head_to_head_stats?opponent_name={}".format(u2.name), cookies, msg="Error attempting to view head to head stats")
-        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=%d" % u2.id, cookies, msg="Error attempting to view head to head stats")
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_name={}".format(u2.name), cookies,
+            msg="Error attempting to view head to head stats"
+        )
         
-        # config.add_route('wordy.new_game', '/new_game')
+        self.make_request(app, "/wordy/head_to_head_stats?opponent_id=%d" % u2.id, cookies,
+            msg="Error attempting to view head to head stats"
+        )
+        
+        # Now lets start a game
+        page_result = self.make_request(app, "/wordy/new_game", cookies,
+            msg="Error loading the new game screen")
+        
+        form = page_result.form  
+        form.set("opponent_name1", u2.name)
+        page_result = form.submit('form.submitted')
+        
+        self.check_request_result(
+            page_result,
+            "",
+            {},
+            expect_forward = re.compile(r"wordy/game/[0-9]+"),
+            msg = "Error submitting the new game form",
+        )
+        
+        # Get match ID
+        game_id = config['DBSession'].query(WordyGame.id).order_by(WordyGame.id.desc()).first()[0]
+        
+        # View game
+        page_result = self.make_request(app, "/wordy/game/{}".format(game_id), cookies,
+            msg="Error viewing the game"
+        )
+        
         # config.add_route('wordy.rematch', '/rematch/{game_id}')
         # config.add_route('wordy.view_game', '/game/{game_id}')
         # config.add_route('wordy.check_status', '/check_status/{game_id}')
