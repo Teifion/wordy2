@@ -167,10 +167,34 @@ class DBTester(DBTestClass):
         )
         
         # Get match ID
-        game_id = config['DBSession'].query(WordyGame.id).order_by(WordyGame.id.desc()).first()[0]
+        the_game = config['DBSession'].query(WordyGame).order_by(WordyGame.id.desc()).first()
         
         # View game
-        page_result = self.make_request(app, "/wordy/game/{}".format(game_id), cookies,
+        page_result = self.make_request(app, "/wordy/game/{}".format(the_game.id), cookies,
+            msg="Error viewing the game"
+        )
+        
+        # Make a move
+        with transaction.manager:
+            the_game.tiles = ("FLATBCD", "URNABCD")
+        
+        form = None
+        for k, f in page_result.forms.items():
+            if f.id == "move_maker_form":
+                form = f
+        
+        if form is None:
+            self.fail("Could not find the move_maker_form when trying to make a move")
+        
+        form.set("letter0", "F_7_7")
+        form.set("letter1", "L_8_7")
+        form.set("letter2", "A_9_7")
+        form.set("letter3", "T_10_7")
+        
+        page_result = form.submit('form.submitted')
+        
+        # View it again to make sure it's still okay to view a game
+        page_result = self.make_request(app, "/wordy/game/{}".format(the_game.id), cookies,
             msg="Error viewing the game"
         )
         
@@ -180,5 +204,7 @@ class DBTester(DBTestClass):
         # config.add_route('wordy.check_turn', '/check_turn/{game_id}')
         # config.add_route('wordy.make_move', '/make_move/{game_id}')
         # config.add_route('wordy.test_move', '/test_move/{game_id}')
+        
+        # View once more now the game has ended
         
         self.make_request(app, "/wordy/menu", cookies, msg="Error loading the menu screen for wordy after ensuring games were added")

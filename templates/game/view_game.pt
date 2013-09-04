@@ -552,15 +552,6 @@
                         <input type="hidden" name="end_game" value="end_game" />
                         <div class="button" onclick="end_game_dialog();">End game</div>
                     </form>
-                    
-                    <!-- Pass -->
-                    <!--
-                    <form tal:condition="your_turn == True" id="pass_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
-                        <input type="hidden" name="pass" value="pass" />
-                        <div class="button" onclick="pass_dialog();">I can't move</div>
-                    </form>
-                    -->
-                    
                     <!-- Swap -->
                     <form tal:condition="your_turn == True" id="swap_form" action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8">
                         <input type="hidden" name="swap" value="swap" />
