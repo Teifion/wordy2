@@ -34,9 +34,9 @@ def new_game(request):
     
     if "form.submitted" in request.params:
         opponents = list(filter(None, (
-            request.params['opponent_name1'].strip().upper(),
-            request.params['opponent_name2'].strip().upper(),
-            request.params['opponent_name3'].strip().upper(),
+            request.params.get('opponent_name1', '').strip().upper(),
+            request.params.get('opponent_name2', '').strip().upper(),
+            request.params.get('opponent_name3', '').strip().upper(),
         )))
         
         found_opponents = []

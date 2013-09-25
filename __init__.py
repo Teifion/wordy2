@@ -1,3 +1,17 @@
+def wordy_nimblescan():
+    try:
+        from ...nimblescan import api
+    except ImportError:
+        try:
+            from ..nimblescan import api
+        except ImportError:
+            return
+    
+    api.register('wordy.menu', "Wordy - Menu", ['games'], (lambda r: True), api.make_forwarder("wordy.menu"))
+    api.register('wordy.new_game', "Wordy - New game", ['games'], (lambda r: True), api.make_form_forwarder("wordy.new_game", []), '<label for="ns_opponent">Opponent:</label> <input type="text" name="opponent_name1" id="ns_opponent" value="" style="display:inline-block;"/>')
+    api.register('wordy.stats', "Wordy - Stats", ['games'], (lambda r: True), api.make_forwarder("wordy.stats"))
+    api.register('wordy.preferences', "Wordy - Preferences", ['games'], (lambda r: True), api.make_forwarder("wordy.preferences"))
+
 def wordy_notifications():
     try:
         from ...communique import register, send
@@ -52,5 +66,6 @@ def includeme(config):
     config.add_view(views.check_status, route_name='wordy.check_status', renderer='string', permission='loggedin')
     
     wordy_notifications()
+    wordy_nimblescan()
     
     return config

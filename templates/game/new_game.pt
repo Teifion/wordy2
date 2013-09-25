@@ -1,6 +1,6 @@
 <div metal:use-macro="layout">
     <style type="text/css" media="screen" metal:fill-slot="css">
-        input[type="text"]
+        .player_name
         {
             width: 100%;
             font-size: 20px;
@@ -43,9 +43,9 @@
             You may select up to 3 opponents for your game. Opponents are selected by their usernames (e.g. jordant) and can be upper or lower case.
             <br /><br />
             
-            <input type="text" name="opponent_name1" value="${request.params.get('opponent_name1', '')}" id="opponent_name1"/><br />
-            <input type="text" name="opponent_name2" value="${request.params.get('opponent_name2', '')}"/><br />
-            <input type="text" name="opponent_name3" value="${request.params.get('opponent_name3', '')}"/><br />
+            <input type="text" class="player_name", name="opponent_name1" value="${request.params.get('opponent_name1', '')}" id="opponent_name1"/><br />
+            <input type="text" class="player_name", name="opponent_name2" value="${request.params.get('opponent_name2', '')}"/><br />
+            <input type="text" class="player_name", name="opponent_name3" value="${request.params.get('opponent_name3', '')}"/><br />
             
             <input type="submit" id="main_submit" name="form.submitted" class="button" value="Start game" style="margin: 0 auto;"/>
         </form>
