@@ -161,8 +161,7 @@ def make_move(request):
             try:
                 new_letters.append((player_letters[int(l)], int(x), int(y)))
             except Exception:
-                # I have a hunch this is caused by submitting the move twice in a row
-                return "failure:List index exception. I can't work out why this is happening or if you even see anything. If you do see this, please let Teifion know."
+                return "failure:Something appears to have gone wrong with the javascript. Close this box, reload the page and try the move again."
     
     if new_letters == []:
         return "failure:You didn't make a move"
