@@ -51,8 +51,8 @@ def new_game(request):
         else:
             game_id = db.new_game([the_user.id] + found_opponents)
             
-            for o in found_opponents:
-                com_send(o, "wordy.new_game", "{} has started a game against you".format(the_user.name), str(game_id), timedelta(hours=24))
+            # for o in found_opponents:
+            #     com_send(o, "wordy.new_game", "{} has started a game against you".format(the_user.name), str(game_id), timedelta(hours=24))
             return HTTPFound(location=request.route_url("wordy.view_game", game_id=game_id))
     
     return dict(
