@@ -39,7 +39,7 @@ def install(request):
     if db.check_for_install():
         return HTTPFound(location=request.route_url("wordy.menu"))
     
-    if "form.submitted" in request.params:
+    if "wordlist" in request.params:
         f = request.params['wordlist'].file
         
         try:
@@ -120,7 +120,7 @@ def preferences(request):
     layout = get_renderer(config['layout']).implementation()
     message = ""
     
-    if "form.submitted" in request.params:
+    if "matchmaking" in request.params:
         matchmaking = request.params['matchmaking']
         if matchmaking == "true":
             profile.matchmaking = True

@@ -32,7 +32,7 @@ def new_game(request):
     message = ""
     flash_colour = "A00"
     
-    if "form.submitted" in request.params:
+    if "opponent_name1" in request.params:
         opponents = list(filter(None, (
             request.params.get('opponent_name1', '').strip().upper(),
             request.params.get('opponent_name2', '').strip().upper(),
