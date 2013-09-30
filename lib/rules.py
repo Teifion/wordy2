@@ -194,7 +194,7 @@ def tally_scores(the_game, moves, count_tiles=False):
                 if j == i: continue
                 temp += sum([letter_values[l] for l in the_game.tiles[j]])
             
-            results[p] = temp
+            results[p] += temp
     
     return results
 
