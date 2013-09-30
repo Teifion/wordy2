@@ -3,6 +3,7 @@ import datetime
 import transaction
 from ..lib import (
     db,
+    rules,
 )
 
 import re
@@ -208,3 +209,59 @@ class DBTester(DBTestClass):
         # View once more now the game has ended
         
         self.make_request(app, "/wordy/menu", cookies, msg="Error loading the menu screen for wordy after ensuring games were added")
+    
+    def test_win_in_depth(self):
+        """I was getting reports the win conditions were not being accurately tracked."""
+        
+        with transaction.manager:
+            config['DBSession'].execute('DELETE FROM wordy_moves')
+            config['DBSession'].execute('DELETE FROM wordy_games')
+            config['DBSession'].execute('DELETE FROM wordy_words')
+            config['DBSession'].execute("INSERT INTO wordy_words VALUES ('FLAT'), ('FLOATSM'), ('MAD')")
+            config['DBSession'].execute('COMMIT')
+        
+        User = config['User']
+        u1, u2 = config['DBSession'].query(User.id, User.name).limit(2)
+        
+        app, cookies = self.get_app()
+        
+        # Now lets start a game
+        db.new_game(players=[u1.id, u2.id], rematch=None)
+        
+        # Get match ID
+        the_game = config['DBSession'].query(WordyGame).order_by(WordyGame.id.desc()).first()
+        
+        def _get_moves():
+            return config['DBSession'].query(WordyMove).filter(WordyMove.game == the_game.id)
+        
+        # Make a move
+        the_game.tiles = ["FLATBCD", "LOATSMZ"]
+        db.perform_move(the_game, u1.id, (
+            ("F", 7, 7),
+            ("L", 8, 7),
+            ("A", 9, 7),
+            ("T", 10, 7),
+        ))
+        
+        the_game.tiles = ["FLATBCD", "LOATSMZ"]
+        db.perform_move(the_game, u2.id, (
+            ("L", 7, 8),
+            ("O", 7, 9),
+            ("A", 7, 10),
+            ("T", 7, 11),
+            ("S", 7, 12),
+            ("M", 7, 13),
+        ))
+        
+        the_game.tiles = ["FLATBCD", "LOATSMZ"]
+        db.perform_move(the_game, u1.id, (
+            ("A", 8, 13),
+            ("D", 9, 13),
+        ))
+        
+        the_game.tiles = ["FLATBCD", "LOATSMZ"]
+        with_count = dict(rules.tally_scores(the_game, _get_moves(), count_tiles=True))
+        without_count = dict(rules.tally_scores(the_game, _get_moves(), count_tiles=False))
+        
+        self.assertEqual(with_count, {u1.id:35, u2.id:28})
+        self.assertEqual(without_count, {u1.id:13, u2.id:17})
