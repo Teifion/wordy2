@@ -1,8 +1,16 @@
 from pyramid.renderers import get_renderer
 from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
 
 from ..lib import (
     db,
+)
+
+from ..models import (
+    WordyGame,
+    WordyMove,
+    WordyProfile,
+    WordyWord,
 )
 
 from ..config import config
@@ -154,3 +162,34 @@ def matchmake(request):
     
     game_id = db.new_game([the_user.id, result])
     return HTTPFound(location=request.route_url("wordy.view_game", game_id=game_id))
+
+def recalculate(request):
+    """
+    Added this route in to fix the bad scoring issue I'd had before.
+    """
+    game_id = int(request.params.get("game", -1))
+    
+    the_game = None
+    try:
+        the_game = db.get_game(game_id)
+        db.end_game(the_game)
+    except Exception:
+        pass
+    
+    # Get next game
+    next_id = config['DBSession'].query(WordyGame.id).filter(WordyGame.id > game_id, WordyGame.winner != None).order_by(WordyGame.id.asc()).first()
+    
+    if next_id is None:
+        return Response(body="No other games", content_type='text/html')
+    
+    data = {
+        "game_id": next_id[0],
+    }
+    recalc = """
+    <script type="text/javascript" charset="utf-8">
+        window.setTimeout('window.location.href = "?game={game_id}";', 1000);
+    </script>
+    Loading next...
+    """
+    
+    return Response(body=recalc.format(**data), content_type='text/html')

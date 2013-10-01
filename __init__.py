@@ -55,6 +55,8 @@ def includeme(config):
     config.add_route('wordy.test_move', '/test_move/{game_id}')
     config.add_route('wordy.matchmake', '/matchmake')
     
+    config.add_route('wordy.recalculate', '/recalculate')
+    
     config.add_view(views.new_game, route_name='wordy.new_game', renderer='templates/game/new_game.pt', permission='loggedin')
     config.add_view(views.matchmake, route_name='wordy.matchmake', renderer='templates/general/matchmake.pt', permission='loggedin')
     config.add_view(views.view_game, route_name='wordy.view_game', renderer='templates/game/view_game.pt', permission='loggedin')
@@ -63,6 +65,8 @@ def includeme(config):
     config.add_view(views.rematch, route_name='wordy.rematch', renderer='string', permission='loggedin')
     config.add_view(views.check_turn, route_name='wordy.check_turn', renderer='string', permission='loggedin')
     config.add_view(views.check_status, route_name='wordy.check_status', renderer='string', permission='loggedin')
+    
+    config.add_view(views.recalculate, route_name='wordy.recalculate', permission='loggedin')
     
     wordy_notifications()
     wordy_nimblescan()

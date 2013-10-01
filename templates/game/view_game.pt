@@ -570,6 +570,8 @@
         <form action="${request.route_url('wordy.make_move', game_id=the_game.id)}" method="post" accept-charset="utf-8" id="move_maker_form">
             <input type="hidden" name="letter${i}" id="letter${i}" value="" tal:repeat="i range(7)" />
             <span id="move_result" style="display:none;"></span>
+            
+            <input type="submit" value="Submit" name="form.submitted" style="display:none;" />
         </form>
         
         <div id="wordy_bottom_nav" style="display:none; width:740px;">
