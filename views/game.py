@@ -26,6 +26,8 @@ except Exception as e:
         pass
 
 def new_game(request):
+    config['check_blocked'](request)
+    
     the_user = config['get_user_func'](request)
     layout = get_renderer(config['layout']).implementation()
     
@@ -65,6 +67,7 @@ def new_game(request):
     )
 
 def view_game(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     layout = get_renderer(config['layout']).implementation()
     
@@ -117,6 +120,7 @@ def view_game(request):
     )
 
 def make_move(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     game_id = int(request.matchdict['game_id'])
     the_game = db.get_game(game_id)
@@ -175,6 +179,7 @@ def make_move(request):
     return r
 
 def rematch(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     game_id  = int(request.matchdict['game_id'])
     the_game = db.get_game(game_id)
@@ -197,6 +202,7 @@ def rematch(request):
     return HTTPFound(location=request.route_url("wordy.view_game", game_id=newgame_id))
 
 def check_turn(request):
+    config['check_blocked'](request)
     request.do_not_log = True
     
     the_user = config['get_user_func'](request)
@@ -208,6 +214,7 @@ def check_turn(request):
     return "False"
 
 def check_status(request):
+    config['check_blocked'](request)
     game_id = int(request.matchdict['game_id'])
     the_game = db.get_game(game_id)
     # pturn = func.player_turn(the_game)

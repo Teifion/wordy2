@@ -25,6 +25,9 @@ config = {
     
     "get_user_func": lambda r: KeyError("No function exists to get the user"),
     "get_user": AUser,
+    
+    # I use this at work so it's an opportunity to check that the user's not been blocked
+    "check_blocked": lambda r: None,
 }
 
 # This is a copy of how I'm setting up my Wordy configuration
@@ -37,3 +40,5 @@ config = {
 #     wordy.config.config['get_user_func']      = lambda r: r.user
 #     wordy.config.config['user.id_property']   = "id"
 #     wordy.config.config['user.name_property'] = "name"
+#     def _wordy_check(request): if request.user.blocked: raise HTTPFound(location="/")
+#     wordy.config.config['check_blocked'] = _wordy_check

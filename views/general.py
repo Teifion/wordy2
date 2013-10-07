@@ -16,6 +16,7 @@ from ..models import (
 from ..config import config
 
 def menu(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     layout = get_renderer(config['layout']).implementation()
     
@@ -42,6 +43,7 @@ def menu(request):
     )
 
 def install(request):
+    config['check_blocked'](request)
     layout = get_renderer(config['layout']).implementation()
     
     if db.check_for_install():
@@ -84,6 +86,7 @@ def install(request):
     )
 
 def stats(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     layout = get_renderer(config['layout']).implementation()
     
@@ -98,6 +101,7 @@ def stats(request):
     )
 
 def head_to_head_stats(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     message  = ""
     
@@ -123,6 +127,7 @@ def head_to_head_stats(request):
     )
 
 def preferences(request):
+    config['check_blocked'](request)
     the_user = config['get_user_func'](request)
     profile = db.get_profile(the_user.id)
     layout = get_renderer(config['layout']).implementation()
@@ -146,6 +151,7 @@ def preferences(request):
     )
 
 def matchmake(request):
+    config['check_blocked'](request)
     layout = get_renderer(config['layout']).implementation()
     
     the_user = config['get_user_func'](request)
@@ -164,6 +170,7 @@ def matchmake(request):
     return HTTPFound(location=request.route_url("wordy.view_game", game_id=game_id))
 
 def recalculate(request):
+    config['check_blocked'](request)
     """
     Added this route in to fix the bad scoring issue I'd had before.
     """
