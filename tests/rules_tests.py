@@ -51,8 +51,8 @@ class RulesTester(unittest.TestCase):
         self.assertEqual(scores[2], 6)
         
         scores = rules.tally_scores(the_game, moves, count_tiles=True)
-        self.assertEqual(scores[1], 20)
-        self.assertEqual(scores[2], 2)
+        self.assertEqual(scores[1], 24)
+        self.assertEqual(scores[2], 8)
     
     def test_move(self):
         # This test case first checks a successful move will work, then ensures

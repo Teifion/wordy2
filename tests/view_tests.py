@@ -264,4 +264,4 @@ class DBTester(DBTestClass):
         without_count = dict(rules.tally_scores(the_game, _get_moves(), count_tiles=False))
         
         self.assertEqual(with_count, {u1.id:35, u2.id:28})
-        self.assertEqual(without_count, {u1.id:13, u2.id:17})
+        self.assertEqual(without_count, {u1.id:17, u2.id:13})
