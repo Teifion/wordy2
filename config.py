@@ -40,5 +40,6 @@ config = {
 #     wordy.config.config['get_user_func']      = lambda r: r.user
 #     wordy.config.config['user.id_property']   = "id"
 #     wordy.config.config['user.name_property'] = "name"
-#     def _wordy_check(request): if request.user.blocked: raise HTTPFound(location="/")
+#     def _wordy_check(request):
+#         if request.user.blocked: raise HTTPFound(location="/")
 #     wordy.config.config['check_blocked'] = _wordy_check
