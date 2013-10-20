@@ -211,7 +211,7 @@ class DBTester(DBTestClass):
         self.make_request(app, "/wordy/menu", cookies, msg="Error loading the menu screen for wordy after ensuring games were added")
     
     def test_win_in_depth(self):
-        """I was getting reports the win conditions were not being accurately tracked."""
+        # I was getting reports the win conditions were not being accurately tracked.
         
         with transaction.manager:
             config['DBSession'].execute('DELETE FROM wordy_moves')
