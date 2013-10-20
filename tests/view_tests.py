@@ -81,7 +81,7 @@ class DBTester(DBTestClass):
             config['DBSession'].execute('COMMIT')
         
         User = config['User']
-        u1, u2, u3 = config['DBSession'].query(User.id, User.name).limit(3)
+        u1, u2, u3 = config['DBSession'].query(User.id, User.name).filter(User.id > 1).limit(3)
         
         with transaction.manager:
             p1 = db.get_profile(user_id=u1.id)
